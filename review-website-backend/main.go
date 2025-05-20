@@ -20,7 +20,7 @@ func main() {
 	r := gin.Default()
 	// r.Use(cors.Default()) // Allow CORS for dev
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     []string{"https://charming-sopapillas-ab56d0.netlify.app/"},
 		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
 		AllowHeaders:     []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,
