@@ -41,7 +41,7 @@ function App() {
     // .then((res) => setReviews(res.data))
     // .catch((err) => console.error('Error fetching reviews: ', err));
     try {
-      const res = await fetch('http://localhost:8080/api/reviews')
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/reviews`)
       if (!res.ok) {
         throw new Error("Failed to load reviews")
       }
