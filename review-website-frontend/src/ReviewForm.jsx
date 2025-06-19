@@ -30,12 +30,16 @@ function ReviewForm({ onReviewSubmitted }) {
     formData.append("comments", form.comments);
     formData.append("image", form.image); // file upload
 
+    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/reviews`, {
+      const res = await fetch(`${API_BASE}/api/reviews`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
+
+    //   console.log(`${import.meta.env.VITE_API_URL}/api/reviews`)
 
       if (!res.ok) {
         const errData = await res.json();

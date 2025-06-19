@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 // import axios from 'axios';
-import './App.css';
-import './index.css';
+import "./App.css";
+import "./index.css";
 
 import useAuth from "./useAuth";
 import LoginForm from "./LoginForm";
@@ -16,7 +16,13 @@ import ReviewForm from "./ReviewForm";
 function ReviewCard({ review }) {
   return (
     <div className="bg-white rounded-2xl shadow-md p-4 w-full max-w-md mx-auto mb-6">
-      <img src={review.photo} alt={review.restaurant} className="rounded-xl mb-4 w-full h-48 object-cover" />
+      {review.photo ? (
+        <img
+          src={review.photo}
+          alt={review.restaurant}
+          className="rounded-xl mb-4 w-full h-48 object-cover"
+        />
+      ) : null}
       <h2 className="text-blue-600 text-xl font-bold">{review.restaurant}</h2>
       <p className="text-yellow-500 font-semibold">⭐ {review.rating}</p>
       <p className="text-blue-600 mt-2">{review.comments}</p>
@@ -36,42 +42,51 @@ function App() {
   const { token } = useAuth();
   const [reviews, setReviews] = useState([]);
 
-  const fetchReviews = async() => {
+  const fetchReviews = async () => {
     // axios.get('http://localhost:8080/api/reviews')
     // .then((res) => setReviews(res.data))
     // .catch((err) => console.error('Error fetching reviews: ', err));
+    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/reviews`)
+      console.log(`${API_BASE}/api/reviews`);
+      // const res = await fetch(`${import.meta.env.VITE_API_URL}/api/reviews`, {
+      const res = await fetch(`${API_BASE}/api/reviews`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
       if (!res.ok) {
-        throw new Error("Failed to load reviews")
+        throw new Error("Failed to load reviews");
       }
-      const data = await res.json()
-      setReviews(data)
+      const data = await res.json();
+      setReviews(data);
+    } catch (err) {
+      alert("Error loading reviews: ", err);
     }
-    catch (err) {
-      alert("Error leading reviews: ", err)
-    }
-  }
+  };
 
   useEffect(() => {
     fetchReviews();
-  }, [])
+  }, []);
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
-    <h1 className="text-blue-600 text-3xl font-bold text-center mb-8">My Restaurant Reviews</h1>
+      <h1 className="text-blue-600 text-3xl font-bold text-center mb-8">
+        My Restaurant Reviews
+      </h1>
 
-    {!token ? <LoginForm /> : <ReviewForm onReviewSubmitted={fetchReviews}/>}
+      {!token ? <LoginForm /> : <ReviewForm onReviewSubmitted={fetchReviews} />}
 
-    {reviews.length > 0 ? (
-      reviews.map((review) => (
-        <ReviewCard key={review.ID} review={review} />
-      ))
-    ) : (
-      <p className="text-center text-gray-500">No reviews yet.</p>
-    )} 
+      {reviews.length > 0 ? (
+        reviews.map((review) => <ReviewCard key={review.ID} review={review} />)
+      ) : (
+        <p className="text-center text-gray-500">No reviews yet.</p>
+      )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
