@@ -16,6 +16,11 @@ import (
 )
 
 func SetupReviewRoutes(r *gin.Engine) {
+
+	r.OPTIONS("/*path", func(c *gin.Context) {
+		c.AbortWithStatus(204)
+	})
+
 	r.GET("/api/reviews", func(c *gin.Context) {
 		var reviews []models.Review
 		database.DB.Find(&reviews)
