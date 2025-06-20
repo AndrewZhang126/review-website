@@ -6,6 +6,7 @@ import "./index.css";
 import useAuth from "./useAuth";
 import LoginForm from "./LoginForm";
 import ReviewForm from "./ReviewForm";
+import ReviewCard from "./ReviewCard";
 
 // const sampleReview = {
 //   restaurant: "Joe’s Pizza",
@@ -13,22 +14,22 @@ import ReviewForm from "./ReviewForm";
 //   review: "Delicious New York-style pizza with crispy thin crust and gooey cheese.",
 //   photoUrl: "review-website-frontend/src/assets/react.svg"
 // };
-function ReviewCard({ review }) {
-  return (
-    <div className="bg-white rounded-2xl shadow-md p-4 w-full max-w-md mx-auto mb-6">
-      {review.photo ? (
-        <img
-          src={review.photo}
-          alt={review.restaurant}
-          className="rounded-xl mb-4 w-full h-48 object-cover"
-        />
-      ) : null}
-      <h2 className="text-blue-600 text-xl font-bold">{review.restaurant}</h2>
-      <p className="text-yellow-500 font-semibold">⭐ {review.rating}</p>
-      <p className="text-blue-600 mt-2">{review.comments}</p>
-    </div>
-  );
-}
+// function ReviewCard({ review }) {
+//   return (
+//     <div className="bg-white rounded-2xl shadow-md p-4 w-full max-w-md mx-auto mb-6">
+//       {review.photo ? (
+//         <img
+//           src={review.photo}
+//           alt={review.restaurant}
+//           className="rounded-xl mb-4 w-full h-48 object-cover"
+//         />
+//       ) : null}
+//       <h2 className="text-blue-600 text-xl font-bold">{review.restaurant}</h2>
+//       <p className="text-yellow-500 font-semibold">⭐ {review.rating}</p>
+//       <p className="text-blue-600 mt-2">{review.comments}</p>
+//     </div>
+//   );
+// }
 
 /**
  * @typedef {Object} Review
@@ -72,6 +73,11 @@ function App() {
     fetchReviews();
   }, []);
 
+  const handleDeleteReview = (deletedId) => {
+    setReviews((prevReviews) => prevReviews.filter((r) => r.ID !== deletedId));
+  };
+
+
   return (
     <div className="bg-gray-100 min-h-screen p-6">
       <h1 className="text-blue-600 text-3xl font-bold text-center mb-8">
@@ -81,7 +87,7 @@ function App() {
       {!token ? <LoginForm /> : <ReviewForm onReviewSubmitted={fetchReviews} />}
 
       {reviews.length > 0 ? (
-        reviews.map((review) => <ReviewCard key={review.ID} review={review} />)
+        reviews.map((review) => <ReviewCard key={review.ID} review={review} onDelete={handleDeleteReview}/>)
       ) : (
         <p className="text-center text-gray-500">No reviews yet.</p>
       )}

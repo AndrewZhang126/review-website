@@ -7,6 +7,7 @@ import (
 	"review-website-backend/models"
 
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -39,6 +40,30 @@ func SetupReviewRoutes(r *gin.Engine) {
 
 	//checks if JSON format is error, if so then its unauthorized
 	authorized := r.Group("/", AuthMiddleware())
+
+	authorized.DELETE("/api/reviews/:id", func(c *gin.Context) {
+		idParam := c.Param("id")
+		id, err := strconv.Atoi(idParam)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid review ID"})
+			return
+		}
+
+		// Try to delete review by ID
+		result := database.DB.Delete(&models.Review{}, id)
+		if result.Error != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+			return
+		}
+
+		if result.RowsAffected == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Review not found"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Review deleted"})
+	})
+
 	authorized.POST("/api/reviews", func(c *gin.Context) {
 		// var review models.Review
 		// //converts JSON to review struct

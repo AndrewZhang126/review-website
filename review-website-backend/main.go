@@ -22,7 +22,7 @@ func main() {
 	// r.Use(cors.Default()) // Allow CORS for dev
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173", "https://charming-sopapillas-ab56d0.netlify.app"},
-		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
