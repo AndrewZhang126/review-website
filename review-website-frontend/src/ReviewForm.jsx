@@ -1,9 +1,12 @@
 import { useState } from "react";
 import useAuth from "./useAuth";
-// import axios from "axios";
+import { postReviewAPI } from "./utils/api";
 
+/***
+ * Form to submit a review (admin only)
+ */
 function ReviewForm({ onReviewSubmitted }) {
-  const { token, logout } = useAuth();
+  const { token } = useAuth();
   const [form, setForm] = useState({
     restaurant: "",
     rating: "",
@@ -18,8 +21,7 @@ function ReviewForm({ onReviewSubmitted }) {
     } else {
       setForm({ ...form, [name]: value });
     }
-  }
-    // setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,32 +32,15 @@ function ReviewForm({ onReviewSubmitted }) {
     formData.append("comments", form.comments);
     formData.append("image", form.image); // file upload
 
-    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
-
     try {
-      const res = await fetch(`${API_BASE}/api/reviews`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-
-    //   console.log(`${import.meta.env.VITE_API_URL}/api/reviews`)
-
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Failed to submit");
-      }
+      await postReviewAPI(formData, token);
       alert("Review submitted!");
       onReviewSubmitted();
     } catch (err) {
-      alert("Failed to submit: ", err);
+      alert(err.message);
     }
-    //   alert("Review submitted!");
-    //   onReviewSubmitted();
-    // } catch (err) {
-    //   alert("Failed to submit: ", err);
-    // }
   };
+
   return (
     <div className="bg-white shadow p-4 mb-8 max-w-md mx-auto">
       <h2 className="text-blue-600 font-bold mb-2">Add Review</h2>
@@ -92,13 +77,6 @@ function ReviewForm({ onReviewSubmitted }) {
             className="bg-green-600 text-white px-4 py-2 rounded"
           >
             Submit
-          </button>
-          <button
-            type="button"
-            onClick={logout}
-            className="bg-gray-400 text-white px-4 py-2 rounded"
-          >
-            Logout
           </button>
         </div>
       </form>

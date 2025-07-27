@@ -1,33 +1,14 @@
-import React from "react";
 import useAuth from "./useAuth";
 
-
+/***
+ * Shows a specific review
+ */
 function ReviewCard({ review, onDelete }) {
-
-   const { token } = useAuth();
-
-   const handleDelete = async () => {
-    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
-
-    try {
-      const res = await fetch(`${API_BASE}/api/reviews/${review.ID}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) throw new Error("Failed to delete review");
-      onDelete(review.ID);
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+  const { token } = useAuth();
 
   return (
     <div className="bg-white rounded-2xl shadow-md p-4 w-full max-w-md mx-auto mb-6">
-    {token && (
-        <button onClick={handleDelete}>Delete</button>
-      )}
+      {token && <button onClick={() => onDelete(review.ID)}>Delete</button>}
       {review.photo ? (
         <img
           src={review.photo}
